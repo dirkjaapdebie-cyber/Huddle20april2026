@@ -24,7 +24,7 @@
         
         #display-source { background: #fffde7; padding: 20px; border-radius: 15px; text-align: center; font-size: 1.1rem; font-weight: bold; margin-top: 15px; border: 2px solid var(--gold); color: var(--deep); display: none; }
 
-        .question-slider { background: #ebfaff; border: 3px solid var(--water); padding: 40px 25px; border-radius: 20px; margin-top: 25px; text-align: center; min-height: 200px; display: flex; flex-direction: column; justify-content: center; }
+        .slider-box { background: #ebfaff; border: 3px solid var(--water); padding: 40px 25px; border-radius: 20px; margin-top: 25px; text-align: center; min-height: 200px; display: flex; flex-direction: column; justify-content: center; }
         .question-content { font-size: 1.4rem; color: var(--deep); line-height: 1.5; font-weight: 500; }
         .question-title { color: var(--teamA); font-weight: 900; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; display: block; }
 
@@ -56,8 +56,8 @@
             <iframe src="https://www.youtube.com/embed/sFIe0AQWZ9U?start=400&end=600&rel=0" frameborder="0" allowfullscreen></iframe>
         </div>
 
-        <div class="question-slider">
-            <div id="q-content" class="question-content">
+        <div class="slider-box">
+            <div class="question-content">
                 <span class="question-title" id="q-title">Gespreksvraag</span>
                 <span id="q-text">Laden...</span>
             </div>
@@ -68,10 +68,18 @@
         <div class="video-wrapper">
             <iframe src="https://www.youtube.com/embed/sFIe0AQWZ9U?start=860&end=1300&rel=0" frameborder="0" allowfullscreen></iframe>
         </div>
+
+        <div class="slider-box" style="border-color: var(--gold); background: #fffdf2;">
+            <div class="question-content">
+                <span class="question-title" id="r-title" style="color: #d4a017;">Reflectie</span>
+                <span id="r-text">Laden...</span>
+            </div>
+            <button class="game-btn" onclick="nextReflection()" style="margin-top: 20px; background: var(--gold); color: #2f3640;">Volgende Reflectie →</button>
+        </div>
     </div>
 
     <div id="setup-screen" class="section-card">
-        <h2>🎮 Tijd voor Klabakken!</h2>
+        <h2>🎮 Tijd voor Slabakken!</h2>
         <input type="text" id="username" placeholder="Typ je naam...">
         <button class="game-btn" onclick="login(false)">Doe mee</button>
     </div>
@@ -83,7 +91,7 @@
             <div id="spectator-view" style="text-align:center;"><h3 id="active-player-name" style="color:var(--water); font-size:2rem;">?</h3></div>
         </div>
         <div id="admin-controls" class="hidden admin-panel">
-            <div onclick="toggleBeamerMode()" id="beamerStatus" style="background:#ffeaa7; padding:10px; cursor:pointer; text-align:center; border-radius:10px; font-weight:bold;">🛡️ BEAMER MODUS: UIT</div>
+            <div onclick="toggleBeamerBeamerMode()" id="beamerStatus" style="background:#ffeaa7; padding:10px; cursor:pointer; text-align:center; border-radius:10px; font-weight:bold;">🛡️ BEAMER MODUS: UIT</div>
             <div id="admin-word-display" style="text-align:center; padding:10px; background:white; border-radius:10px; border:1px solid #ddd; margin-top:10px;"></div>
             <button class="game-btn" style="background:#00b894;" onclick="toggleClock()">START KLOK ▶️</button>
             <div id="judge-controls" class="hidden">
@@ -117,6 +125,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, set, onValue, update, push, get, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
+        // Slider 1: Vragen
         const questions = [
             { title: "De Dorst-check", text: "Waar heb jij de afgelopen periode 'gedronken' (social media, werk, Netflix) en voelde je je daarna voller of juist leger?" },
             { title: "Actief Vragen", text: "Heb jij wel eens gevraagd of de Heilige Geest jou wil vullen? Durf je nu hardop of in stilte te zeggen: \"Heilige Geest, ik heb dorst, vul mij nu opnieuw\"?" },
@@ -128,8 +137,24 @@
             document.getElementById('q-title').innerText = questions[currentQ].title;
             document.getElementById('q-text').innerText = questions[currentQ].text;
         };
-        nextQuestion();
 
+        // Slider 2: Reflecties
+        const reflections = [
+            { title: "Persoonlijk", text: "Herken jij dat: Op je rug liggen en niet meer overeind komen? Welke situatie was dat?" },
+            { title: "Omzien naar elkaar", text: "Heb jij iemand die op z'n rug lag geholpen?" }
+        ];
+        let currentR = -1;
+        window.nextReflection = () => {
+            currentR = (currentR + 1) % reflections.length;
+            document.getElementById('r-title').innerText = reflections[currentR].title;
+            document.getElementById('r-text').innerText = reflections[currentR].text;
+        };
+
+        // Init sliders
+        nextQuestion();
+        nextReflection();
+
+        // Firebase logica
         const firebaseConfig = { apiKey: "AIzaSyCSoSYmzdcse87_E-p6K-DMn_NbQWFnPNU", authDomain: "huddlebijdebie26jan.firebaseapp.com", databaseURL: "https://huddlebijdebie26jan-default-rtdb.europe-west1.firebasedatabase.app", projectId: "huddlebijdebie26jan" };
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
@@ -164,7 +189,7 @@
             }
         });
 
-        window.toggleBeamerMode = () => {
+        window.toggleBeamerBeamerMode = () => {
             const s = document.getElementById('beamerStatus');
             const isOff = s.innerText.includes("UIT");
             s.innerText = isOff ? "🛡️ BEAMER MODUS: AAN" : "🛡️ BEAMER MODUS: UIT";
