@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Levend Water: Studie, Klabakken & Afsluiting</title>
+    <title>Levend Water: Drinken van de Geest</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
-        :root { --water: #00a8ff; --deep: #273c75; --teamA: #0984e3; --teamB: #e84393; --bg: #f5f6fa; --danger: #d63031; --dirty: #7f8c8d; }
+        :root { --water: #00a8ff; --deep: #273c75; --teamA: #0984e3; --teamB: #e84393; --bg: #f5f6fa; --danger: #d63031; --dirty: #7f8c8d; --gold: #f1c40f; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 15px; color: #2f3640; }
         
         .section-card { background: white; border-radius: 20px; padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); max-width: 850px; margin: 20px auto; border-top: 8px solid var(--water); position: relative; }
@@ -22,39 +22,28 @@
         .btn-dirty { background: var(--dirty); }
         .btn-clean { background: var(--water); }
         
-        #display-source { background: #fffde7; padding: 20px; border-radius: 15px; text-align: center; font-size: 1.1rem; font-weight: bold; margin-top: 15px; border: 2px solid #f1c40f; color: var(--deep); display: none; }
+        #display-source { background: #fffde7; padding: 20px; border-radius: 15px; text-align: center; font-size: 1.1rem; font-weight: bold; margin-top: 15px; border: 2px solid var(--gold); color: var(--deep); display: none; }
 
-        /* Klabakken UI */
+        /* Gespreks-activatie */
+        .activation-box { background: #ebfaff; border: 2px dashed var(--water); padding: 20px; border-radius: 15px; margin-top: 25px; }
+        .activation-box h3 { color: var(--teamA); margin-top: 0; }
+        .question-item { background: white; padding: 10px 15px; border-radius: 10px; margin-bottom: 10px; border-left: 4px solid var(--gold); }
+
+        /* Klabakken & Lyrics */
         .timer { font-size: 4rem; font-weight: 900; color: var(--danger); text-align: center; margin: 10px 0; }
         .word-box { font-size: 2rem; background: #fff3cd; padding: 20px; border: 3px dashed #fdcb6e; border-radius: 15px; text-align: center; font-weight: bold; margin: 15px 0; }
         .game-btn { background: var(--deep); color: white; border: none; padding: 12px 20px; border-radius: 50px; font-weight: bold; cursor: pointer; width: 100%; margin: 5px 0; display: block; }
         .hidden { display: none; }
         .admin-panel { background: #f1f2f6; border: 2px solid var(--water); padding: 15px; border-radius: 15px; margin-top: 20px; }
-        .beamer-blur { filter: blur(10px); opacity: 0.1; pointer-events: none; }
-
-        /* Afsluiting & Lyrics */
-        .lyrics-container { display: flex; flex-direction: column; gap: 20px; }
-        .lyrics-scroll-box {
-            height: 400px;
-            overflow-y: scroll;
-            background: #2d3436;
-            color: #ecf0f1;
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            font-size: 1.4rem;
-            line-height: 1.8;
-            border: 4px solid var(--water);
-        }
-        .lyrics-text { white-space: pre-line; }
-        .video-small { width: 100%; border-radius: 15px; overflow: hidden; border: 2px solid var(--water); }
+        
+        .lyrics-scroll-box { height: 350px; overflow-y: scroll; background: #2d3436; color: #ecf0f1; padding: 30px; border-radius: 15px; text-align: center; font-size: 1.4rem; line-height: 1.8; border: 4px solid var(--water); }
     </style>
 </head>
 <body>
 
     <div class="section-card">
         <div class="admin-link" onclick="toggleAdminLogin()">⚙️ Beheer</div>
-        <h1>🌊 Levend Water</h1>
+        <h1>🌊 Levend Water: Drinken van de Geest</h1>
         
         <div id="admin-login-box" class="hidden admin-panel">
             <input type="password" id="admin-pass" placeholder="Wachtwoord...">
@@ -62,23 +51,29 @@
         </div>
 
         <div class="video-wrapper">
-            <iframe src="https://www.youtube.com/embed/sFIe0AQWZ9U?start=0&end=400&rel=0" frameborder="0" allowfullscreen></iframe>
+            <iframe src="https://www.youtube.com/embed/sFIe0AQWZ9U?start=0&end=600&rel=0" frameborder="0" allowfullscreen></iframe>
         </div>
         
         <div class="source-grid">
-            <button class="btn-source btn-dirty" onclick="setSource('Vuile bron: \'Als ik succesvol ben, word ik gewaardeerd.\'')">Prestaties</button>
-            <button class="btn-source btn-dirty" onclick="setSource('Vuile bron: \'Als ik er goed uitzie, word ik bewonderd.\'')">Uiterlijk</button>
-            <button class="btn-source btn-dirty" onclick="setSource('Vuile bron: Sociale status en erkenning van anderen.')">Sociale Status</button>
-            <button class="btn-source btn-clean" onclick="setSource('Levend Water: \'Je bent mijn geliefde kind, in jou vind ik vreugde.\'')">Geliefd Kind</button>
-            <button class="btn-source btn-clean" onclick="setSource('Levend Water: \'Hij herstelt je ziel in de oorspronkelijke staat.\'')">Zielherstel</button>
+            <button class="btn-source btn-dirty" onclick="setSource('Vuile bron: Prestaties - \'Ik ben wat ik doe.\'')">Prestaties</button>
+            <button class="btn-source btn-dirty" onclick="setSource('Vuile bron: Uiterlijk - \'Ik ben hoe anderen mij zien.\'')">Uiterlijk</button>
+            <button class="btn-source btn-clean" onclick="setSource('Levend Water: Je bent geliefd om wie je BENT, niet om wat je doet.')">Geliefd Kind</button>
+            <button class="btn-source btn-clean" onclick="setSource('Drinken: Je openstellen voor de Heilige Geest (Johannes 7:37-39).')">Heilige Geest</button>
         </div>
         <div id="display-source"></div>
+
+        <div class="activation-box">
+            <h3>✨ Sprankelende Gesprekken</h3>
+            <div class="question-item"><b>De Dorst-check:</b> Waar heb jij de afgelopen periode 'gedronken' (social media, werk, Netflix) en voelde je je daarna voller of juist leger?</div>
+            <div class="question-item"><b>Actief Vragen:</b> Wilkin zegt: drinken is actief vragen. Heb jij wel eens gevraagd of de Heilige geest jou wil vullen?  Durf je nu hardop of in stilte te zeggen: <i>"Heilige Geest, ik heb dorst, vul mij nu opnieuw"</i>? ?</div>
+            <div class="question-item"><b>Stromend Water:</b> Jezus belooft dat er stromen van levend water uit je binnenste zullen vloeien. Voor wie in jouw omgeving zou jij een 'verfrissing' willen zijn deze week?</div>
+        </div>
     </div>
 
     <div id="setup-screen" class="section-card">
-        <h2>🎮 Klabakken Game</h2>
+        <h2>🎮 Tijd voor Klabakken!</h2>
         <input type="text" id="username" placeholder="Typ je naam...">
-        <button class="game-btn" onclick="login(false)">Deelnemen</button>
+        <button class="game-btn" onclick="login(false)">Doe mee</button>
     </div>
 
     <div id="game-screen" class="section-card hidden">
@@ -92,53 +87,43 @@
             <div id="admin-word-display" style="text-align:center; padding:10px; background:white; border-radius:10px; border:1px solid #ddd; margin-top:10px;"></div>
             <button class="game-btn" style="background:#00b894; margin-top:10px;" id="startBtn" onclick="toggleClock()">START KLOK ▶️</button>
             <div id="judge-controls" class="hidden">
-                <button class="game-btn" style="background:var(--water)" onclick="judge(true)">PUNT ✅</button>
+                <button class="game-btn" style="background:var(--water)" onclick="judge(true)">GOED ✅</button>
                 <button class="game-btn" style="background:var(--danger)" onclick="judge(false)">FOUT ❌</button>
             </div>
         </div>
     </div>
 
     <div class="section-card">
-        <h2>🙏 Afsluiting: Zingen</h2>
-        <div class="lyrics-container">
-            <div class="video-small">
-                <div style="position: relative; padding-bottom: 56.25%; height: 0;">
-                    <iframe src="https://www.youtube.com/embed/S01ZfE30f1Y" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" frameborder="0" allowfullscreen></iframe>
-                </div>
+        <h2>🙏 Afsluiting & Zingen</h2>
+        <div style="margin-bottom: 20px;">
+            <div style="position: relative; padding-bottom: 56.25%; height: 0; border-radius:15px; overflow:hidden;">
+                <iframe src="https://www.youtube.com/embed/S01ZfE30f1Y" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" frameborder="0" allowfullscreen></iframe>
             </div>
+        </div>
+        <div class="lyrics-scroll-box">
+            <h3 style="color:var(--water)">Opwekking 642 – De Rivier</h3>
+            <div class="lyrics-text">
+                Al mijn zonden, al mijn zorgen,
+                neem ik mee naar de rivier.
+                Heer, vergeef mij en genees mij.
+                Vader, kom, ontmoet mij hier.
+                Want dit water brengt nieuw leven
+                en verfrist mij elke dag.
+                't Is een stroom van uw genade,
+                waar 'k U steeds ontmoeten mag.
 
-            <div class="lyrics-scroll-box">
-                <h3 style="color:var(--water)">Opwekking 642 – De Rivier</h3>
-                <div class="lyrics-text">
-                    Al mijn zonden, al mijn zorgen,
-                    neem ik mee naar de rivier.
-                    Heer, vergeef mij en genees mij.
-                    Vader, kom, ontmoet mij hier.
-                    Want dit water brengt nieuw leven
-                    en verfrist mij elke dag.
-                    't Is een stroom van uw genade,
-                    waar 'k U steeds ontmoeten mag.
+                <b>Refrein:</b>
+                Here Jezus, neem mijn leven,
+                ik leg alles voor u neer.
+                Leid mij steeds weer naar het water,
+                'k wil U daar ontmoeten, Heer.
 
-                    <b>Refrein:</b>
-                    Here Jezus, neem mijn leven,
-                    ik leg alles voor u neer.
-                    Leid mij steeds weer naar het water,
-                    'k wil U daar ontmoeten, Heer.
+                Kom ontvang een heel nieuw leven,
+                kom en stap in de rivier.
+                Jezus roept je, Hij verwacht je
+                en Hij zegt: "ontmoet mij hier"
 
-                    Kom ontvang een heel nieuw leven,
-                    kom en stap in de rivier.
-                    Jezus roept je, Hij verwacht je
-                    en Hij zegt: "ontmoet mij hier"
-
-                    <b>Refrein:</b>
-                    Here Jezus, neem mijn leven,
-                    ik leg alles voor u neer.
-                    Leid mij steeds weer naar het water,
-                    'k wil U daar ontmoeten, Heer.
-
-                    Leid mij steeds weer naar het water;
-                    'k wil U daar ontmoeten, Heer.
-                </div>
+                <b>Refrein (2x)</b>
             </div>
         </div>
     </div>
@@ -166,7 +151,7 @@
         window.toggleBeamerMode = () => {
             beamerMode = !beamerMode;
             document.getElementById('beamerStatus').innerText = beamerMode ? "🛡️ BEAMER MODUS: AAN" : "🛡️ BEAMER MODUS: UIT";
-            document.getElementById('admin-word-display').classList.toggle('beamer-blur', beamerMode);
+            document.getElementById('admin-word-display').style.filter = beamerMode ? "blur(10px)" : "none";
         };
 
         window.login = (asAdmin) => {
@@ -203,7 +188,6 @@
                 document.getElementById('player-active').classList.add('hidden');
                 document.getElementById('spectator-view').classList.remove('hidden');
             }
-            if(d.lastEvent?.startsWith('win')) confetti({ particleCount: 80, spread: 60, origin: { y: 0.7 } });
         });
 
         window.toggleClock = () => update(ref(db, 'game'), { clockRunning: true });
@@ -215,6 +199,7 @@
                 up[k] = (d.activeTeam === 'A' ? d.scoreA : d.scoreB) + 1;
                 up['game/wIdx'] = (d.wIdx + 1) % d.words.length;
                 up['game/lastEvent'] = 'win_' + Date.now();
+                confetti({ particleCount: 80, spread: 60, origin: { y: 0.7 } });
             } else {
                 const nT = d.activeTeam === 'A' ? 'B' : 'A';
                 if(d.activeTeam === 'A') up['game/pIdxA'] = (d.pIdxA + 1) % d.teamA.length;
