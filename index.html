@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Levend Water: Drinken van de Geest</title>
+    <title>Levend Water: Interactieve Studie</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root { --water: #00a8ff; --deep: #273c75; --teamA: #0984e3; --teamB: #e84393; --bg: #f5f6fa; --danger: #d63031; --dirty: #7f8c8d; --gold: #f1c40f; }
@@ -24,18 +24,13 @@
         
         #display-source { background: #fffde7; padding: 20px; border-radius: 15px; text-align: center; font-size: 1.1rem; font-weight: bold; margin-top: 15px; border: 2px solid var(--gold); color: var(--deep); display: none; }
 
-        /* Gespreks-activatie */
-        .activation-box { background: #ebfaff; border: 2px dashed var(--water); padding: 20px; border-radius: 15px; margin-top: 25px; }
-        .activation-box h3 { color: var(--teamA); margin-top: 0; }
-        .question-item { background: white; padding: 10px 15px; border-radius: 10px; margin-bottom: 10px; border-left: 4px solid var(--gold); }
+        .question-slider { background: #ebfaff; border: 3px solid var(--water); padding: 40px 25px; border-radius: 20px; margin-top: 25px; text-align: center; min-height: 200px; display: flex; flex-direction: column; justify-content: center; }
+        .question-content { font-size: 1.4rem; color: var(--deep); line-height: 1.5; font-weight: 500; }
+        .question-title { color: var(--teamA); font-weight: 900; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; display: block; }
 
-        /* Klabakken & Lyrics */
-        .timer { font-size: 4rem; font-weight: 900; color: var(--danger); text-align: center; margin: 10px 0; }
-        .word-box { font-size: 2rem; background: #fff3cd; padding: 20px; border: 3px dashed #fdcb6e; border-radius: 15px; text-align: center; font-weight: bold; margin: 15px 0; }
-        .game-btn { background: var(--deep); color: white; border: none; padding: 12px 20px; border-radius: 50px; font-weight: bold; cursor: pointer; width: 100%; margin: 5px 0; display: block; }
+        .game-btn { background: var(--deep); color: white; border: none; padding: 15px 25px; border-radius: 50px; font-weight: bold; cursor: pointer; width: 100%; margin: 10px 0; display: block; font-size: 1rem; }
         .hidden { display: none; }
         .admin-panel { background: #f1f2f6; border: 2px solid var(--water); padding: 15px; border-radius: 15px; margin-top: 20px; }
-        
         .lyrics-scroll-box { height: 350px; overflow-y: scroll; background: #2d3436; color: #ecf0f1; padding: 30px; border-radius: 15px; text-align: center; font-size: 1.4rem; line-height: 1.8; border: 4px solid var(--water); }
     </style>
 </head>
@@ -43,13 +38,8 @@
 
     <div class="section-card">
         <div class="admin-link" onclick="toggleAdminLogin()">⚙️ Beheer</div>
-        <h1>🌊 Levend Water: Drinken van de Geest</h1>
+        <h1>🌊 Levend Water</h1>
         
-        <div id="admin-login-box" class="hidden admin-panel">
-            <input type="password" id="admin-pass" placeholder="Wachtwoord...">
-            <button class="game-btn" onclick="login(true)">Inloggen</button>
-        </div>
-
         <div class="video-wrapper">
             <iframe src="https://www.youtube.com/embed/sFIe0AQWZ9U?start=0&end=600&rel=0" frameborder="0" allowfullscreen></iframe>
         </div>
@@ -57,16 +47,26 @@
         <div class="source-grid">
             <button class="btn-source btn-dirty" onclick="setSource('Vuile bron: Prestaties - \'Ik ben wat ik doe.\'')">Prestaties</button>
             <button class="btn-source btn-dirty" onclick="setSource('Vuile bron: Uiterlijk - \'Ik ben hoe anderen mij zien.\'')">Uiterlijk</button>
-            <button class="btn-source btn-clean" onclick="setSource('Levend Water: Je bent geliefd om wie je BENT, niet om wat je doet.')">Geliefd Kind</button>
-            <button class="btn-source btn-clean" onclick="setSource('Drinken: Je openstellen voor de Heilige Geest (Johannes 7:37-39).')">Heilige Geest</button>
+            <button class="btn-source btn-clean" onclick="setSource('Levend Water: Je bent geliefd om wie je BENT.')">Geliefd Kind</button>
+            <button class="btn-source btn-clean" onclick="setSource('Drinken: Je openstellen voor de Heilige Geest.')">Heilige Geest</button>
         </div>
         <div id="display-source"></div>
 
-        <div class="activation-box">
-            <h3>✨ Sprankelende Gesprekken</h3>
-            <div class="question-item"><b>De Dorst-check:</b> Waar heb jij de afgelopen periode 'gedronken' (social media, werk, Netflix) en voelde je je daarna voller of juist leger?</div>
-            <div class="question-item"><b>Actief Vragen:</b> Wilkin zegt: drinken is actief vragen. Heb jij wel eens gevraagd of de Heilige geest jou wil vullen?  Durf je nu hardop of in stilte te zeggen: <i>"Heilige Geest, ik heb dorst, vul mij nu opnieuw"</i>? ?</div>
-            <div class="question-item"><b>Stromend Water:</b> Jezus belooft dat er stromen van levend water uit je binnenste zullen vloeien. Voor wie in jouw omgeving zou jij een 'verfrissing' willen zijn deze week?</div>
+        <div class="video-wrapper">
+            <iframe src="https://www.youtube.com/embed/sFIe0AQWZ9U?start=400&end=600&rel=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+
+        <div class="question-slider">
+            <div id="q-content" class="question-content">
+                <span class="question-title" id="q-title">Gespreksvraag</span>
+                <span id="q-text">Laden...</span>
+            </div>
+            <button class="game-btn" onclick="nextQuestion()" style="margin-top: 20px; background: var(--water);">Volgende Vraag →</button>
+        </div>
+
+        <h3 style="margin-top:40px;">Verdieping: Meer van de Geest</h3>
+        <div class="video-wrapper">
+            <iframe src="https://www.youtube.com/embed/sFIe0AQWZ9U?start=860&end=1300&rel=0" frameborder="0" allowfullscreen></iframe>
         </div>
     </div>
 
@@ -77,15 +77,15 @@
     </div>
 
     <div id="game-screen" class="section-card hidden">
-        <div id="timer" class="timer">30</div>
+        <div id="timer" style="font-size: 3rem; text-align:center; color:var(--danger); font-weight:900;">30</div>
         <div id="player-view">
-            <div id="player-active" class="hidden"><div id="secret-word" class="word-box">...</div></div>
+            <div id="player-active" class="hidden"><div id="secret-word" style="background:#fff3cd; padding:20px; border-radius:15px; text-align:center; font-weight:bold; font-size:2rem; margin:15px 0;">...</div></div>
             <div id="spectator-view" style="text-align:center;"><h3 id="active-player-name" style="color:var(--water); font-size:2rem;">?</h3></div>
         </div>
         <div id="admin-controls" class="hidden admin-panel">
-            <div class="privacy-toggle" onclick="toggleBeamerMode()" id="beamerStatus" style="background:#ffeaa7; padding:10px; cursor:pointer; text-align:center; border-radius:10px; font-weight:bold;">🛡️ BEAMER MODUS: UIT</div>
+            <div onclick="toggleBeamerMode()" id="beamerStatus" style="background:#ffeaa7; padding:10px; cursor:pointer; text-align:center; border-radius:10px; font-weight:bold;">🛡️ BEAMER MODUS: UIT</div>
             <div id="admin-word-display" style="text-align:center; padding:10px; background:white; border-radius:10px; border:1px solid #ddd; margin-top:10px;"></div>
-            <button class="game-btn" style="background:#00b894; margin-top:10px;" id="startBtn" onclick="toggleClock()">START KLOK ▶️</button>
+            <button class="game-btn" style="background:#00b894;" onclick="toggleClock()">START KLOK ▶️</button>
             <div id="judge-controls" class="hidden">
                 <button class="game-btn" style="background:var(--water)" onclick="judge(true)">GOED ✅</button>
                 <button class="game-btn" style="background:var(--danger)" onclick="judge(false)">FOUT ❌</button>
@@ -95,35 +95,20 @@
 
     <div class="section-card">
         <h2>🙏 Afsluiting & Zingen</h2>
-        <div style="margin-bottom: 20px;">
-            <div style="position: relative; padding-bottom: 56.25%; height: 0; border-radius:15px; overflow:hidden;">
-                <iframe src="https://www.youtube.com/embed/S01ZfE30f1Y" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" frameborder="0" allowfullscreen></iframe>
-            </div>
+        <div class="video-wrapper">
+            <iframe src="https://www.youtube.com/embed/S01ZfE30f1Y" frameborder="0" allowfullscreen></iframe>
         </div>
         <div class="lyrics-scroll-box">
             <h3 style="color:var(--water)">Opwekking 642 – De Rivier</h3>
-            <div class="lyrics-text">
-                Al mijn zonden, al mijn zorgen,
-                neem ik mee naar de rivier.
-                Heer, vergeef mij en genees mij.
-                Vader, kom, ontmoet mij hier.
-                Want dit water brengt nieuw leven
-                en verfrist mij elke dag.
-                't Is een stroom van uw genade,
-                waar 'k U steeds ontmoeten mag.
+            <div style="white-space: pre-line;">
+                Al mijn zonden, al mijn zorgen, neem ik mee naar de rivier.
+                Heer, vergeef mij en genees mij. Vader, kom, ontmoet mij hier.
+                Want dit water brengt nieuw leven en verfrist mij elke dag.
+                't Is een stroom van uw genade, waar 'k U steeds ontmoeten mag.
 
                 <b>Refrein:</b>
-                Here Jezus, neem mijn leven,
-                ik leg alles voor u neer.
-                Leid mij steeds weer naar het water,
-                'k wil U daar ontmoeten, Heer.
-
-                Kom ontvang een heel nieuw leven,
-                kom en stap in de rivier.
-                Jezus roept je, Hij verwacht je
-                en Hij zegt: "ontmoet mij hier"
-
-                <b>Refrein (2x)</b>
+                Here Jezus, neem mijn leven, ik leg alles voor u neer.
+                Leid mij steeds weer naar het water, 'k wil U daar ontmoeten, Heer.
             </div>
         </div>
     </div>
@@ -132,41 +117,34 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, set, onValue, update, push, get, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyCSoSYmzdcse87_E-p6K-DMn_NbQWFnPNU",
-            authDomain: "huddlebijdebie26jan.firebaseapp.com",
-            databaseURL: "https://huddlebijdebie26jan-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "huddlebijdebie26jan",
-            storageBucket: "huddlebijdebie26jan.firebasestorage.app",
-            messagingSenderId: "700291377085",
-            appId: "1:700291377085:web:d07c390ccdb760d77094d4"
+        const questions = [
+            { title: "De Dorst-check", text: "Waar heb jij de afgelopen periode 'gedronken' (social media, werk, Netflix) en voelde je je daarna voller of juist leger?" },
+            { title: "Actief Vragen", text: "Heb jij wel eens gevraagd of de Heilige Geest jou wil vullen? Durf je nu hardop of in stilte te zeggen: \"Heilige Geest, ik heb dorst, vul mij nu opnieuw\"?" },
+            { title: "Stromend Water", text: "Jezus belooft dat er stromen van levend water uit je binnenste zullen vloeien. Voor wie in jouw omgeving zou jij een 'verfrissing' zijn deze week?" }
+        ];
+        let currentQ = -1;
+        window.nextQuestion = () => {
+            currentQ = (currentQ + 1) % questions.length;
+            document.getElementById('q-title').innerText = questions[currentQ].title;
+            document.getElementById('q-text').innerText = questions[currentQ].text;
         };
+        nextQuestion();
 
+        const firebaseConfig = { apiKey: "AIzaSyCSoSYmzdcse87_E-p6K-DMn_NbQWFnPNU", authDomain: "huddlebijdebie26jan.firebaseapp.com", databaseURL: "https://huddlebijdebie26jan-default-rtdb.europe-west1.firebasedatabase.app", projectId: "huddlebijdebie26jan" };
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-        let myName = "", isAdmin = false, beamerMode = false;
+        let myName = "", isAdmin = false;
 
         window.setSource = (t) => { const d = document.getElementById('display-source'); d.innerText = t; d.style.display = 'block'; };
         window.toggleAdminLogin = () => document.getElementById('admin-login-box').classList.toggle('hidden');
-        window.toggleBeamerMode = () => {
-            beamerMode = !beamerMode;
-            document.getElementById('beamerStatus').innerText = beamerMode ? "🛡️ BEAMER MODUS: AAN" : "🛡️ BEAMER MODUS: UIT";
-            document.getElementById('admin-word-display').style.filter = beamerMode ? "blur(10px)" : "none";
-        };
-
         window.login = (asAdmin) => {
             if(asAdmin && document.getElementById('admin-pass').value === 'bie123') {
-                isAdmin = true;
-                document.getElementById('admin-login-box').classList.add('hidden');
+                isAdmin = true; document.getElementById('admin-login-box').classList.add('hidden');
                 document.getElementById('game-screen').classList.remove('hidden');
                 document.getElementById('admin-controls').classList.remove('hidden');
             } else if(!asAdmin) {
                 myName = document.getElementById('username').value.trim();
-                if(myName) {
-                    set(ref(db, 'players/' + myName), { name: myName });
-                    document.getElementById('setup-screen').classList.add('hidden');
-                    document.getElementById('game-screen').classList.remove('hidden');
-                }
+                if(myName) { set(ref(db, 'players/' + myName), { name: myName }); document.getElementById('setup-screen').classList.add('hidden'); document.getElementById('game-screen').classList.remove('hidden'); }
             }
         };
 
@@ -178,18 +156,20 @@
             document.getElementById('active-player-name').innerText = actP;
             if(isAdmin) {
                 document.getElementById('admin-word-display').innerHTML = `SPELER: <b>${actP}</b> | WOORD: <b>${currentWord}</b>`;
-                document.getElementById('startBtn').classList.toggle('hidden', d.clockRunning);
-                document.getElementById('judge-controls').classList.toggle('hidden', !d.clockRunning);
+                document.getElementById('admin-word-display').style.filter = document.getElementById('beamerStatus').innerText.includes("AAN") ? "blur(10px)" : "none";
             } else if(myName === actP) {
                 document.getElementById('player-active').classList.remove('hidden');
                 document.getElementById('secret-word').innerText = d.clockRunning ? currentWord : "⏳";
                 document.getElementById('spectator-view').classList.add('hidden');
-            } else {
-                document.getElementById('player-active').classList.add('hidden');
-                document.getElementById('spectator-view').classList.remove('hidden');
             }
         });
 
+        window.toggleBeamerMode = () => {
+            const s = document.getElementById('beamerStatus');
+            const isOff = s.innerText.includes("UIT");
+            s.innerText = isOff ? "🛡️ BEAMER MODUS: AAN" : "🛡️ BEAMER MODUS: UIT";
+            document.getElementById('admin-word-display').style.filter = isOff ? "blur(10px)" : "none";
+        };
         window.toggleClock = () => update(ref(db, 'game'), { clockRunning: true });
         window.judge = async (isCorrect) => {
             const s = await get(ref(db, 'game')); const d = s.val();
@@ -198,7 +178,6 @@
                 const k = d.activeTeam === 'A' ? 'game/scoreA' : 'game/scoreB';
                 up[k] = (d.activeTeam === 'A' ? d.scoreA : d.scoreB) + 1;
                 up['game/wIdx'] = (d.wIdx + 1) % d.words.length;
-                up['game/lastEvent'] = 'win_' + Date.now();
                 confetti({ particleCount: 80, spread: 60, origin: { y: 0.7 } });
             } else {
                 const nT = d.activeTeam === 'A' ? 'B' : 'A';
