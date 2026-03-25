@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Levend Water & Klabakken (Beamer Safe)</title>
+    <title>Levend Water: Studie, Klabakken & Afsluiting</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root { --water: #00a8ff; --deep: #273c75; --teamA: #0984e3; --teamB: #e84393; --bg: #f5f6fa; --danger: #d63031; --dirty: #7f8c8d; }
@@ -24,21 +24,30 @@
         
         #display-source { background: #fffde7; padding: 20px; border-radius: 15px; text-align: center; font-size: 1.1rem; font-weight: bold; margin-top: 15px; border: 2px solid #f1c40f; color: var(--deep); display: none; }
 
+        /* Klabakken UI */
         .timer { font-size: 4rem; font-weight: 900; color: var(--danger); text-align: center; margin: 10px 0; }
         .word-box { font-size: 2rem; background: #fff3cd; padding: 20px; border: 3px dashed #fdcb6e; border-radius: 15px; text-align: center; font-weight: bold; margin: 15px 0; }
-        
         .game-btn { background: var(--deep); color: white; border: none; padding: 12px 20px; border-radius: 50px; font-weight: bold; cursor: pointer; width: 100%; margin: 5px 0; display: block; }
-        .btn-wrong { background: #fab1a0; color: #d63031; }
-
         .hidden { display: none; }
-        .score-row { display: flex; justify-content: space-around; background: #f8f9fa; padding: 15px; border-radius: 15px; margin: 15px 0; font-weight: bold; }
-        input { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 10px; border: 1px solid #ddd; box-sizing: border-box; }
-        
-        /* Admin Privacy Modus */
         .admin-panel { background: #f1f2f6; border: 2px solid var(--water); padding: 15px; border-radius: 15px; margin-top: 20px; }
-        .privacy-toggle { background: #ffeaa7; padding: 10px; border-radius: 10px; margin-bottom: 15px; text-align: center; font-weight: bold; cursor: pointer; border: 2px solid #fdcb6e; }
-        .beamer-blur { filter: blur(8px); opacity: 0.2; pointer-events: none; }
-        .word-peek { font-size: 0.7rem; color: var(--water); text-decoration: underline; cursor: pointer; display: block; margin-top: 5px; }
+        .beamer-blur { filter: blur(10px); opacity: 0.1; pointer-events: none; }
+
+        /* Afsluiting & Lyrics */
+        .lyrics-container { display: flex; flex-direction: column; gap: 20px; }
+        .lyrics-scroll-box {
+            height: 400px;
+            overflow-y: scroll;
+            background: #2d3436;
+            color: #ecf0f1;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 1.4rem;
+            line-height: 1.8;
+            border: 4px solid var(--water);
+        }
+        .lyrics-text { white-space: pre-line; }
+        .video-small { width: 100%; border-radius: 15px; overflow: hidden; border: 2px solid var(--water); }
     </style>
 </head>
 <body>
@@ -48,7 +57,6 @@
         <h1>🌊 Levend Water</h1>
         
         <div id="admin-login-box" class="hidden admin-panel">
-            <h3>Beheerders Login</h3>
             <input type="password" id="admin-pass" placeholder="Wachtwoord...">
             <button class="game-btn" onclick="login(true)">Inloggen</button>
         </div>
@@ -58,64 +66,80 @@
         </div>
         
         <div class="source-grid">
-            <button class="btn-source btn-dirty" onclick="setSource('Vuile bron: \'Als ik succesvol ben, word ik gewaardeerd.\' [00:06:16]')">Prestaties</button>
-            <button class="btn-source btn-dirty" onclick="setSource('Vuile bron: \'Als ik er goed uitzie, word ik bewonderd.\' [00:06:08]')">Uiterlijk</button>
+            <button class="btn-source btn-dirty" onclick="setSource('Vuile bron: \'Als ik succesvol ben, word ik gewaardeerd.\'')">Prestaties</button>
+            <button class="btn-source btn-dirty" onclick="setSource('Vuile bron: \'Als ik er goed uitzie, word ik bewonderd.\'')">Uiterlijk</button>
             <button class="btn-source btn-dirty" onclick="setSource('Vuile bron: Sociale status en erkenning van anderen.')">Sociale Status</button>
-            <button class="btn-source btn-clean" onclick="setSource('Levend Water: \'Je bent mijn geliefde kind, in jou vind ik vreugde.\' [00:26:14]')">Geliefd Kind</button>
-            <button class="btn-source btn-clean" onclick="setSource('Levend Water: \'Hij herstelt je ziel in de oorspronkelijke staat.\' [00:24:40]')">Zielherstel</button>
+            <button class="btn-source btn-clean" onclick="setSource('Levend Water: \'Je bent mijn geliefde kind, in jou vind ik vreugde.\'')">Geliefd Kind</button>
+            <button class="btn-source btn-clean" onclick="setSource('Levend Water: \'Hij herstelt je ziel in de oorspronkelijke staat.\'')">Zielherstel</button>
         </div>
         <div id="display-source"></div>
     </div>
 
     <div id="setup-screen" class="section-card">
-        <h2>🎮 Klabakken</h2>
+        <h2>🎮 Klabakken Game</h2>
         <input type="text" id="username" placeholder="Typ je naam...">
         <button class="game-btn" onclick="login(false)">Deelnemen</button>
     </div>
 
-    <div id="word-screen" class="section-card hidden">
-        <h2>Hoi <span id="display-name"></span></h2>
-        <input type="text" id="user-word" placeholder="Voeg een woord toe...">
-        <button class="game-btn" onclick="submitWord()">In de pot!</button>
-    </div>
-
     <div id="game-screen" class="section-card hidden">
         <div id="timer" class="timer">30</div>
-        
         <div id="player-view">
-            <div id="player-active" class="hidden">
-                <p style="text-align:center;">JOUW WOORD:</p>
-                <div id="secret-word" class="word-box">...</div>
-            </div>
-            <div id="spectator-view" style="text-align:center;">
-                <p>Raad het woord van:</p>
-                <h3 id="active-player-name" style="color:var(--water); font-size:2rem;">?</h3>
-            </div>
+            <div id="player-active" class="hidden"><div id="secret-word" class="word-box">...</div></div>
+            <div id="spectator-view" style="text-align:center;"><h3 id="active-player-name" style="color:var(--water); font-size:2rem;">?</h3></div>
         </div>
-
-        <div class="score-row">
-            <div>A: <span id="score-a">0</span></div>
-            <div>B: <span id="score-b">0</span></div>
-        </div>
-
         <div id="admin-controls" class="hidden admin-panel">
-            <div class="privacy-toggle" onclick="toggleBeamerMode()" id="beamerStatus">
-                🛡️ BEAMER MODUS: UIT (Iedereen ziet alles)
-            </div>
-
-            <div id="admin-info-container">
-                <div id="admin-word-display" style="text-align:center; padding:10px; background:white; border-radius:10px; border:1px solid #ddd;">
-                    <span id="blurred-info">Gegevens verborgen...</span>
-                </div>
-                <span class="word-peek" onmousedown="peek(true)" onmouseup="peek(false)" ontouchstart="peek(true)" ontouchend="peek(false)">Houd ingedrukt om woord te spieken 👁️</span>
-            </div>
-
-            <button class="game-btn" style="background:#00b894; margin-top:15px;" id="startBtn" onclick="toggleClock()">START KLOK ▶️</button>
+            <div class="privacy-toggle" onclick="toggleBeamerMode()" id="beamerStatus" style="background:#ffeaa7; padding:10px; cursor:pointer; text-align:center; border-radius:10px; font-weight:bold;">🛡️ BEAMER MODUS: UIT</div>
+            <div id="admin-word-display" style="text-align:center; padding:10px; background:white; border-radius:10px; border:1px solid #ddd; margin-top:10px;"></div>
+            <button class="game-btn" style="background:#00b894; margin-top:10px;" id="startBtn" onclick="toggleClock()">START KLOK ▶️</button>
             <div id="judge-controls" class="hidden">
                 <button class="game-btn" style="background:var(--water)" onclick="judge(true)">PUNT ✅</button>
-                <button class="game-btn btn-wrong" onclick="judge(false)">STOP / FOUT ❌</button>
+                <button class="game-btn" style="background:var(--danger)" onclick="judge(false)">FOUT ❌</button>
             </div>
-            <button class="game-btn" style="background:#b2bec3; font-size:0.7rem; width:auto; margin: 20px auto 0;" onclick="resetGame()">RESET ALLES</button>
+        </div>
+    </div>
+
+    <div class="section-card">
+        <h2>🙏 Afsluiting: Zingen</h2>
+        <div class="lyrics-container">
+            <div class="video-small">
+                <div style="position: relative; padding-bottom: 56.25%; height: 0;">
+                    <iframe src="https://www.youtube.com/embed/S01ZfE30f1Y" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" frameborder="0" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="lyrics-scroll-box">
+                <h3 style="color:var(--water)">Opwekking 642 – De Rivier</h3>
+                <div class="lyrics-text">
+                    Al mijn zonden, al mijn zorgen,
+                    neem ik mee naar de rivier.
+                    Heer, vergeef mij en genees mij.
+                    Vader, kom, ontmoet mij hier.
+                    Want dit water brengt nieuw leven
+                    en verfrist mij elke dag.
+                    't Is een stroom van uw genade,
+                    waar 'k U steeds ontmoeten mag.
+
+                    <b>Refrein:</b>
+                    Here Jezus, neem mijn leven,
+                    ik leg alles voor u neer.
+                    Leid mij steeds weer naar het water,
+                    'k wil U daar ontmoeten, Heer.
+
+                    Kom ontvang een heel nieuw leven,
+                    kom en stap in de rivier.
+                    Jezus roept je, Hij verwacht je
+                    en Hij zegt: "ontmoet mij hier"
+
+                    <b>Refrein:</b>
+                    Here Jezus, neem mijn leven,
+                    ik leg alles voor u neer.
+                    Leid mij steeds weer naar het water,
+                    'k wil U daar ontmoeten, Heer.
+
+                    Leid mij steeds weer naar het water;
+                    'k wil U daar ontmoeten, Heer.
+                </div>
+            </div>
         </div>
     </div>
 
@@ -135,24 +159,72 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-        let myName = "", isAdmin = false, beamerMode = false, currentWord = "";
+        let myName = "", isAdmin = false, beamerMode = false;
 
+        window.setSource = (t) => { const d = document.getElementById('display-source'); d.innerText = t; d.style.display = 'block'; };
         window.toggleAdminLogin = () => document.getElementById('admin-login-box').classList.toggle('hidden');
-        
         window.toggleBeamerMode = () => {
             beamerMode = !beamerMode;
-            const btn = document.getElementById('beamerStatus');
-            btn.innerText = beamerMode ? "🛡️ BEAMER MODUS: AAN (Woorden verborgen)" : "🛡️ BEAMER MODUS: UIT (Iedereen ziet alles)";
-            btn.style.background = beamerMode ? "#55efc4" : "#ffeaa7";
-            updateAdminDisplay();
+            document.getElementById('beamerStatus').innerText = beamerMode ? "🛡️ BEAMER MODUS: AAN" : "🛡️ BEAMER MODUS: UIT";
+            document.getElementById('admin-word-display').classList.toggle('beamer-blur', beamerMode);
         };
-
-        window.peek = (show) => {
-            if(!beamerMode) return;
-            document.getElementById('admin-word-display').classList.toggle('beamer-blur', !show);
-        };
-
-        window.setSource = (t) => { document.getElementById('display-source').innerText = t; document.getElementById('display-source').style.display = 'block'; };
 
         window.login = (asAdmin) => {
-            if(asAdmin) {
+            if(asAdmin && document.getElementById('admin-pass').value === 'bie123') {
+                isAdmin = true;
+                document.getElementById('admin-login-box').classList.add('hidden');
+                document.getElementById('game-screen').classList.remove('hidden');
+                document.getElementById('admin-controls').classList.remove('hidden');
+            } else if(!asAdmin) {
+                myName = document.getElementById('username').value.trim();
+                if(myName) {
+                    set(ref(db, 'players/' + myName), { name: myName });
+                    document.getElementById('setup-screen').classList.add('hidden');
+                    document.getElementById('game-screen').classList.remove('hidden');
+                }
+            }
+        };
+
+        onValue(ref(db, 'game'), (snap) => {
+            const d = snap.val(); if(!d) return;
+            document.getElementById('timer').innerText = d.timer;
+            const actP = d.activeTeam === 'A' ? d.teamA[d.pIdxA] : d.teamB[d.pIdxB];
+            const currentWord = d.words[d.wIdx]?.word || "...";
+            document.getElementById('active-player-name').innerText = actP;
+            if(isAdmin) {
+                document.getElementById('admin-word-display').innerHTML = `SPELER: <b>${actP}</b> | WOORD: <b>${currentWord}</b>`;
+                document.getElementById('startBtn').classList.toggle('hidden', d.clockRunning);
+                document.getElementById('judge-controls').classList.toggle('hidden', !d.clockRunning);
+            } else if(myName === actP) {
+                document.getElementById('player-active').classList.remove('hidden');
+                document.getElementById('secret-word').innerText = d.clockRunning ? currentWord : "⏳";
+                document.getElementById('spectator-view').classList.add('hidden');
+            } else {
+                document.getElementById('player-active').classList.add('hidden');
+                document.getElementById('spectator-view').classList.remove('hidden');
+            }
+            if(d.lastEvent?.startsWith('win')) confetti({ particleCount: 80, spread: 60, origin: { y: 0.7 } });
+        });
+
+        window.toggleClock = () => update(ref(db, 'game'), { clockRunning: true });
+        window.judge = async (isCorrect) => {
+            const s = await get(ref(db, 'game')); const d = s.val();
+            let up = { clockRunning: false, timer: 30 };
+            if(isCorrect) {
+                const k = d.activeTeam === 'A' ? 'game/scoreA' : 'game/scoreB';
+                up[k] = (d.activeTeam === 'A' ? d.scoreA : d.scoreB) + 1;
+                up['game/wIdx'] = (d.wIdx + 1) % d.words.length;
+                up['game/lastEvent'] = 'win_' + Date.now();
+            } else {
+                const nT = d.activeTeam === 'A' ? 'B' : 'A';
+                if(d.activeTeam === 'A') up['game/pIdxA'] = (d.pIdxA + 1) % d.teamA.length;
+                else up['game/pIdxB'] = (d.pIdxB + 1) % d.teamB.length;
+                up['game/activeTeam'] = nT;
+                up['game/wIdx'] = (d.wIdx + 1) % d.words.length;
+            }
+            update(ref(db), up);
+        };
+        setInterval(() => { if(isAdmin) { get(ref(db, 'game')).then(s => { const d = s.val(); if(d && d.clockRunning && d.timer > 0) update(ref(db, 'game'), { timer: d.timer - 1 }); else if(d && d.clockRunning && d.timer === 0) judge(false); }); } }, 1000);
+    </script>
+</body>
+</html>
