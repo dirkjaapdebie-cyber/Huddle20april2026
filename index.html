@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bijbelstudie & Klabakken Regie</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --water: #00a8ff; --deep: #273c75; --teamA: #0984e3; --teamB: #e84393; --bg: #f5f6fa; --danger: #d63031; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 15px; color: #2f3640; }
+        
+        .section-card { background: white; border-radius: 20px; padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); max-width: 850px; margin: 20px auto; border-top: 8px solid var(--water); }
+        h1, h2 { text-align: center; color: var(--deep); }
+
+        /* Video sectie */
+        .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; border-radius: 15px; overflow: hidden; background: #000; margin: 20px 0; }
+        .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
+        /* Klabakken UI */
+        #admin-gate { position: absolute; top: 10px; right: 20px; font-size: 0.75rem; color: #aaa; cursor: pointer; text-decoration: underline; }
+        .timer { font-size: 4rem; font-weight: 900; color: var(--danger); text-align: center; }
+        .word-box { font-size: 2rem; background: #fff3cd; padding: 20px; border: 3px dashed #fdcb6e; border-radius: 15px; text-align: center; font-weight: bold; margin: 15px 0; }
+        
+        button { background: var(--water); color: white; border: none; padding: 12px 20px; border-radius: 50px; font-weight: bold; cursor: pointer; width: 100%; margin: 5px 0; transition: 0.3s; }
+        button:hover { opacity: 0.9; transform: translateY(-2px); }
+        .btn-start { background: #6c5ce7; }
+        .btn-wrong { background: #fab1a0; color: #d63031; }
+        .btn-reset { background: var(--danger); font-size: 0.8rem; margin-top: 20px; }
+
+        .hidden { display: none; }
+        .grid-questions { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .q-card { background: #f1f2f6; padding: 15px; border-radius: 10px; border-left: 5px solid var(--water); font-size: 0.9rem; }
+        
+        .score-row { display: flex; justify-content: space-around; background: #f8f9fa; padding: 15px; border-radius: 15px; margin: 15px 0; }
+        input { width: 90%; padding: 12px; margin-bottom: 10px; border-radius: 10px; border: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+
+    <div id="admin-gate" onclick="document.getElementById('admin-login-box').classList.toggle('hidden')">Beheer</div>
+
+    <div class="section-card">
+        <h1>🌊 Stille Wateren</h1>
+        <div class="video-wrapper">
+            <iframe src="https://www.youtube.com/embed/sFIe0AQWZ9U?start=0&end=400&rel=0" frameborder="0" allowfullscreen></iframe>
+        </div>
+        
+        <div class="grid-questions">
+            <div class="q-card"><b>Vraag 1:</b> Wat zijn jouw 'vuile bronnen' (bijv. social media, prestaties)?</div>
+            <div class="q-card"><b>Vraag 2:</b> Hoe ervaar jij de rust van de Herder in een drukke week?</div>
+        </div>
+    </div>
+
+    <div id="setup-screen" class="section-card">
+        <h2>🎮 Spel Center</h2>
+        <div id="admin-login-box" class="hidden" style="background:#eee; padding:15px; border-radius:10px; margin-bottom:20px;">
+            <input type="password" id="admin-pass" placeholder="Wachtwoord...">
+            <button onclick="login(true)">Login als Spelleider</button>
+        </div>
+        <input type="text" id="username" placeholder="Je naam voor het spel...">
+        <button onclick="login(false)">Doe mee met Klabakken!</button>
+    </div>
+
+    <div id="word-screen" class="section-card hidden">
+        <h2>Hoi <span id="display-name"></span></h2>
+        <p>Voer een woord in dat past bij het thema (of een willekeurig woord):</p>
+        <input type="text" id="user-word" placeholder="Bijv: Herder, Vertrouwen, Dorst...">
+        <button onclick="submitWord()">In de pot!</button>
+    </div>
+
+    <div id="game-screen" class="section-card hidden">
+        <div id="timer" class="timer">30</div>
+        <div id="turn-msg" style="text-align:center; font-weight:bold; margin-bottom:10px;">Wachten op de start...</div>
+        
+        <div id="player-view">
+            <div id="player-active" class="hidden">
+                <p style="text-align:center;">JOUW WOORD:</p>
+                <div id="secret-word" class="word-box">...</div>
+            </div>
+            <div id="spectator-view" style="text-align:center;">
+                <p>Raad het woord van:</p>
+                <h3 id="active-player-name">?</h3>
+            </div>
+        </div>
+
+        <div class="score-row">
+            <div>Team A: <b id="score-a">0</b></div>
+            <div>Team B: <b id="score-b">0</b></div>
+        </div>
+
+        <div id="admin-controls" class="hidden">
+            <hr>
+            <div id="admin-word-display" style="text-align:center; background:#f8f9fa; padding:10px; border-radius:10px;"></div>
+            <button class="btn-start" id="startBtn" onclick="toggleClock()">START KLOK ▶️</button>
+            <div id="judge-controls" class="hidden">
+                <button onclick="judge(true)">GOED ✅</button>
+                <button class="btn-wrong" onclick="judge(false)">FOUT / VOLGENDE ❌</button>
+            </div>
+            <button class="btn-reset" onclick="resetGame()">RESET SPEL & SCORES ⚠️</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, set, onValue, update, push, get, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCSoSYmzdcse87_E-p6K-DMn_NbQWFnPNU",
+            authDomain: "huddlebijdebie26jan.firebaseapp.com",
+            databaseURL: "https://huddlebijdebie26jan-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "huddlebijdebie26jan",
+            storageBucket: "huddlebijdebie26jan.firebasestorage.app",
+            messagingSenderId: "700291377085",
+            appId: "1:700291377085:web:d07c390ccdb760d77094d4"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        let myName = "", isAdmin = false;
+
+        window.login = function(asAdmin) {
+            if(asAdmin) {
+                if(document.getElementById('admin-pass').value === 'bie123') {
+                    isAdmin = true; myName = "ADMIN";
+                    document.getElementById('setup-screen').classList.add('hidden');
+                    document.getElementById('game-screen').classList.remove('hidden');
+                } else { alert("Fout wachtwoord"); }
+            } else {
+                myName = document.getElementById('username').value.trim();
+                if(!myName) return;
+                set(ref(db, 'players/' + myName), { name: myName });
+                document.getElementById('setup-screen').classList.add('hidden');
+                document.getElementById('word-screen').classList.remove('hidden');
+                document.getElementById('display-name').innerText = myName;
+            }
+        };
+
+        window.submitWord = function() {
+            const w = document.getElementById('user-word').value.trim();
+            if(w) push(ref(db, 'wordpool'), { word: w });
+            document.getElementById('word-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('hidden');
+        };
+
+        async function setupGame() {
+            const pSnap = await get(ref(db, 'players'));
+            const wSnap = await get(ref(db, 'wordpool'));
+            if(!pSnap.exists() || !wSnap.exists()) return;
+            const players = Object.keys(pSnap.val());
+            const words = Object.values(wSnap.val()).sort(() => Math.random() - 0.5);
+            let a = [], b = [];
+            players.forEach((n, i) => i % 2 === 0 ? a.push(n) : b.push(n));
+            set(ref(db, 'game'), {
+                teamA: a, teamB: b, scoreA: 0, scoreB: 0,
+                activeTeam: 'A', pIdxA: 0, pIdxB: 0,
+                words: words, wIdx: 0, timer: 30,
+                clockRunning: false, lastEvent: ''
+            });
+        }
+
+        window.toggleClock = () => update(ref(db, 'game'), { clockRunning: true });
+
+        window.judge = async function(isCorrect) {
+            const s = await get(ref(db, 'game'));
+            const d = s.val();
+            let up = { clockRunning: false, timer: 30 };
+            if(isCorrect) {
+                const k = d.activeTeam === 'A' ? 'game/scoreA' : 'game/scoreB';
+                up[k] = (d.activeTeam === 'A' ? d.scoreA : d.scoreB) + 1;
+                up['game/wIdx'] = (d.wIdx + 1) % d.words.length;
+                up['game/lastEvent'] = 'win_' + Date.now();
+            } else {
+                const nT = d.activeTeam === 'A' ? 'B' : 'A';
+                if(d.activeTeam === 'A') up['game/pIdxA'] = (d.pIdxA + 1) % d.teamA.length;
+                else up['game/pIdxB'] = (d.pIdxB + 1) % d.teamB.length;
+                up['game/activeTeam'] = nT;
+                up['game/wIdx'] = (d.wIdx + 1) % d.words.length;
+            }
+            update(ref(db), up);
+        };
+
+        onValue(ref(db, 'game'), (snap) => {
+            const d = snap.val();
+            if(!d) { if(!isAdmin) location.reload(); return; }
+            document.getElementById('score-a').innerText = d.scoreA;
+            document.getElementById('score-b').innerText = d.scoreB;
+            document.getElementById('timer').innerText = d.timer;
+            const actP = d.activeTeam === 'A' ? d.teamA[d.pIdxA] : d.teamB[d.pIdxB];
+            const curW = d.words[d.wIdx]?.word || "LEEG";
+            document.getElementById('active-player-name').innerText = actP;
+            if(isAdmin) {
+                document.getElementById('admin-controls').classList.remove('hidden');
+                document.getElementById('player-view').classList.add('hidden');
+                document.getElementById('admin-word-display').innerHTML = `SPELER: <b>${actP}</b><br>WOORD: <span style="color:red; font-size:1.5rem;">${curW}</span>`;
+                document.getElementById('startBtn').classList.toggle('hidden', d.clockRunning);
+                document.getElementById('judge-controls').classList.toggle('hidden', !d.clockRunning);
+            } else {
+                if(myName === actP) {
+                    document.getElementById('player-active').classList.remove('hidden');
+                    document.getElementById('secret-word').innerText = d.clockRunning ? curW : "WACHTEN...";
+                    document.getElementById('spectator-view').classList.add('hidden');
+                } else {
+                    document.getElementById('player-active').classList.add('hidden');
+                    document.getElementById('spectator-view').classList.remove('hidden');
+                }
+            }
+            if(d.lastEvent?.startsWith('win')) confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+        });
+
+        window.resetGame = () => { if(confirm("Alles wissen?")) { remove(ref(db)); location.reload(); }};
+
+        setInterval(() => {
+            if(isAdmin) {
+                get(ref(db, 'game')).then(s => {
+                    if(!s.exists()) setupGame();
+                    const d = s.val();
+                    if(d && d.clockRunning && d.timer > 0) update(ref(db, 'game'), { timer: d.timer - 1 });
+                    else if(d && d.clockRunning && d.timer === 0) judge(false);
+                });
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
