@@ -3,35 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bijbelstudie & Klabakken Regie</title>
+    <title>Bijbelstudie & Klabakken: Levend Water</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
-        :root { --water: #00a8ff; --deep: #273c75; --teamA: #0984e3; --teamB: #e84393; --bg: #f5f6fa; --danger: #d63031; }
+        :root { --water: #00a8ff; --deep: #273c75; --teamA: #0984e3; --teamB: #e84393; --bg: #f5f6fa; --danger: #d63031; --dirty: #7f8c8d; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 15px; color: #2f3640; }
         
         .section-card { background: white; border-radius: 20px; padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); max-width: 850px; margin: 20px auto; border-top: 8px solid var(--water); }
-        h1, h2 { text-align: center; color: var(--deep); }
+        h1, h2, h3 { text-align: center; color: var(--deep); }
 
         /* Video sectie */
         .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; border-radius: 15px; overflow: hidden; background: #000; margin: 20px 0; }
         .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
+        /* De Bron-knoppen */
+        .source-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
+        .btn-source { padding: 12px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; color: white; font-size: 0.9rem; }
+        .btn-dirty { background: var(--dirty); border-bottom: 4px solid #5d6a6b; }
+        .btn-dirty:hover { background: #636e72; }
+        .btn-clean { background: var(--water); border-bottom: 4px solid #008f72; }
+        .btn-clean:hover { background: #0097e6; }
+        
+        #display-source { background: #fffde7; padding: 20px; border-radius: 15px; text-align: center; font-size: 1.2rem; font-weight: bold; min-height: 50px; margin-top: 15px; border: 2px solid #f1c40f; color: var(--deep); display: none; }
 
         /* Klabakken UI */
         #admin-gate { position: absolute; top: 10px; right: 20px; font-size: 0.75rem; color: #aaa; cursor: pointer; text-decoration: underline; }
         .timer { font-size: 4rem; font-weight: 900; color: var(--danger); text-align: center; }
         .word-box { font-size: 2rem; background: #fff3cd; padding: 20px; border: 3px dashed #fdcb6e; border-radius: 15px; text-align: center; font-weight: bold; margin: 15px 0; }
         
-        button { background: var(--water); color: white; border: none; padding: 12px 20px; border-radius: 50px; font-weight: bold; cursor: pointer; width: 100%; margin: 5px 0; transition: 0.3s; }
-        button:hover { opacity: 0.9; transform: translateY(-2px); }
-        .btn-start { background: #6c5ce7; }
+        .game-btn { background: var(--deep); color: white; border: none; padding: 12px 20px; border-radius: 50px; font-weight: bold; cursor: pointer; width: 100%; margin: 5px 0; }
         .btn-wrong { background: #fab1a0; color: #d63031; }
-        .btn-reset { background: var(--danger); font-size: 0.8rem; margin-top: 20px; }
+        .btn-reset { background: var(--danger); font-size: 0.8rem; margin-top: 20px; color: white; }
 
         .hidden { display: none; }
-        .grid-questions { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
-        .q-card { background: #f1f2f6; padding: 15px; border-radius: 10px; border-left: 5px solid var(--water); font-size: 0.9rem; }
-        
-        .score-row { display: flex; justify-content: space-around; background: #f8f9fa; padding: 15px; border-radius: 15px; margin: 15px 0; }
+        .score-row { display: flex; justify-content: space-around; background: #f8f9fa; padding: 15px; border-radius: 15px; margin: 15px 0; font-weight: bold; }
         input { width: 90%; padding: 12px; margin-bottom: 10px; border-radius: 10px; border: 1px solid #ddd; }
     </style>
 </head>
@@ -40,37 +45,42 @@
     <div id="admin-gate" onclick="document.getElementById('admin-login-box').classList.toggle('hidden')">Beheer</div>
 
     <div class="section-card">
-        <h1>🌊 Stille Wateren</h1>
+        <h1>🌊 Levend Water</h1>
         <div class="video-wrapper">
             <iframe src="https://www.youtube.com/embed/sFIe0AQWZ9U?start=0&end=400&rel=0" frameborder="0" allowfullscreen></iframe>
         </div>
         
-        <div class="grid-questions">
-            <div class="q-card"><b>Vraag 1:</b> Wat zijn jouw 'vuile bronnen' (bijv. social media, prestaties)?</div>
-            <div class="q-card"><b>Vraag 2:</b> Hoe ervaar jij de rust van de Herder in een drukke week?</div>
+        <h3>Onderzoek de bronnen:</h3>
+        <div class="source-grid">
+            <button class="btn-source btn-dirty" onclick="setSource('Vuile bron: \'Als ik succesvol ben, word ik gewaardeerd.\' [00:06:16]')">Prestaties 🏆</button>
+            <button class="btn-source btn-dirty" onclick="setSource('Vuile bron: \'Als ik er goed uitzie, word ik bewonderd.\' [00:06:08]')">Uiterlijk ✨</button>
+            <button class="btn-source btn-dirty" onclick="setSource('Vuile bron: Sociale status en erkenning van anderen.')">Social Status 📱</button>
+            <button class="btn-source btn-clean" onclick="setSource('Levend Water: \'Je bent mijn geliefde kind, in jou vind ik vreugde.\' [00:26:14]')">Geliefd Kind ❤️</button>
+            <button class="btn-source btn-clean" onclick="setSource('Levend Water: \'Hij herstelt je ziel in de oorspronkelijke staat.\' [00:24:40]')">Zielherstel 🌿</button>
         </div>
+
+        <div id="display-source"></div>
     </div>
 
     <div id="setup-screen" class="section-card">
-        <h2>🎮 Spel Center</h2>
+        <h2>🎮 Klabakken Game</h2>
         <div id="admin-login-box" class="hidden" style="background:#eee; padding:15px; border-radius:10px; margin-bottom:20px;">
             <input type="password" id="admin-pass" placeholder="Wachtwoord...">
-            <button onclick="login(true)">Login als Spelleider</button>
+            <button class="game-btn" onclick="login(true)">Login als Spelleider</button>
         </div>
         <input type="text" id="username" placeholder="Je naam voor het spel...">
-        <button onclick="login(false)">Doe mee met Klabakken!</button>
+        <button class="game-btn" onclick="login(false)">Start als Speler</button>
     </div>
 
     <div id="word-screen" class="section-card hidden">
         <h2>Hoi <span id="display-name"></span></h2>
-        <p>Voer een woord in dat past bij het thema (of een willekeurig woord):</p>
-        <input type="text" id="user-word" placeholder="Bijv: Herder, Vertrouwen, Dorst...">
-        <button onclick="submitWord()">In de pot!</button>
+        <input type="text" id="user-word" placeholder="Voeg een woord toe (bijv: Levend Water)...">
+        <button class="game-btn" onclick="submitWord()">In de pot!</button>
     </div>
 
     <div id="game-screen" class="section-card hidden">
         <div id="timer" class="timer">30</div>
-        <div id="turn-msg" style="text-align:center; font-weight:bold; margin-bottom:10px;">Wachten op de start...</div>
+        <div id="turn-msg" style="text-align:center; font-weight:bold;">Wachten op de start...</div>
         
         <div id="player-view">
             <div id="player-active" class="hidden">
@@ -84,19 +94,19 @@
         </div>
 
         <div class="score-row">
-            <div>Team A: <b id="score-a">0</b></div>
-            <div>Team B: <b id="score-b">0</b></div>
+            <div style="color:var(--teamA)">Team A: <span id="score-a">0</span></div>
+            <div style="color:var(--teamB)">Team B: <span id="score-b">0</span></div>
         </div>
 
         <div id="admin-controls" class="hidden">
             <hr>
-            <div id="admin-word-display" style="text-align:center; background:#f8f9fa; padding:10px; border-radius:10px;"></div>
-            <button class="btn-start" id="startBtn" onclick="toggleClock()">START KLOK ▶️</button>
+            <div id="admin-word-display" style="text-align:center; margin-bottom:10px; font-weight:bold;"></div>
+            <button class="game-btn" style="background:var(--water)" id="startBtn" onclick="toggleClock()">START KLOK ▶️</button>
             <div id="judge-controls" class="hidden">
-                <button onclick="judge(true)">GOED ✅</button>
-                <button class="btn-wrong" onclick="judge(false)">FOUT / VOLGENDE ❌</button>
+                <button class="game-btn" style="background:#00b894" onclick="judge(true)">GOED ✅</button>
+                <button class="game-btn btn-wrong" onclick="judge(false)">FOUT / VOLGENDE ❌</button>
             </div>
-            <button class="btn-reset" onclick="resetGame()">RESET SPEL & SCORES ⚠️</button>
+            <button class="btn-reset" onclick="resetGame()">RESET HELE SPEL ⚠️</button>
         </div>
     </div>
 
@@ -118,13 +128,19 @@
         const db = getDatabase(app);
         let myName = "", isAdmin = false;
 
+        window.setSource = function(text) {
+            const el = document.getElementById('display-source');
+            el.innerText = text;
+            el.style.display = 'block';
+        };
+
         window.login = function(asAdmin) {
             if(asAdmin) {
                 if(document.getElementById('admin-pass').value === 'bie123') {
                     isAdmin = true; myName = "ADMIN";
                     document.getElementById('setup-screen').classList.add('hidden');
                     document.getElementById('game-screen').classList.remove('hidden');
-                } else { alert("Fout wachtwoord"); }
+                }
             } else {
                 myName = document.getElementById('username').value.trim();
                 if(!myName) return;
@@ -150,12 +166,7 @@
             const words = Object.values(wSnap.val()).sort(() => Math.random() - 0.5);
             let a = [], b = [];
             players.forEach((n, i) => i % 2 === 0 ? a.push(n) : b.push(n));
-            set(ref(db, 'game'), {
-                teamA: a, teamB: b, scoreA: 0, scoreB: 0,
-                activeTeam: 'A', pIdxA: 0, pIdxB: 0,
-                words: words, wIdx: 0, timer: 30,
-                clockRunning: false, lastEvent: ''
-            });
+            set(ref(db, 'game'), { teamA: a, teamB: b, scoreA: 0, scoreB: 0, activeTeam: 'A', pIdxA: 0, pIdxB: 0, words: words, wIdx: 0, timer: 30, clockRunning: false, lastEvent: '' });
         }
 
         window.toggleClock = () => update(ref(db, 'game'), { clockRunning: true });
@@ -191,13 +202,13 @@
             if(isAdmin) {
                 document.getElementById('admin-controls').classList.remove('hidden');
                 document.getElementById('player-view').classList.add('hidden');
-                document.getElementById('admin-word-display').innerHTML = `SPELER: <b>${actP}</b><br>WOORD: <span style="color:red; font-size:1.5rem;">${curW}</span>`;
+                document.getElementById('admin-word-display').innerHTML = `SPELER: <b>${actP}</b> | WOORD: <span style="color:red">${curW}</span>`;
                 document.getElementById('startBtn').classList.toggle('hidden', d.clockRunning);
                 document.getElementById('judge-controls').classList.toggle('hidden', !d.clockRunning);
             } else {
                 if(myName === actP) {
                     document.getElementById('player-active').classList.remove('hidden');
-                    document.getElementById('secret-word').innerText = d.clockRunning ? curW : "WACHTEN...";
+                    document.getElementById('secret-word').innerText = d.clockRunning ? curW : "⏱️";
                     document.getElementById('spectator-view').classList.add('hidden');
                 } else {
                     document.getElementById('player-active').classList.add('hidden');
@@ -212,10 +223,10 @@
         setInterval(() => {
             if(isAdmin) {
                 get(ref(db, 'game')).then(s => {
-                    if(!s.exists()) setupGame();
                     const d = s.val();
-                    if(d && d.clockRunning && d.timer > 0) update(ref(db, 'game'), { timer: d.timer - 1 });
-                    else if(d && d.clockRunning && d.timer === 0) judge(false);
+                    if(!s.exists()) setupGame();
+                    else if(d.clockRunning && d.timer > 0) update(ref(db, 'game'), { timer: d.timer - 1 });
+                    else if(d.clockRunning && d.timer === 0) judge(false);
                 });
             }
         }, 1000);
