@@ -86,11 +86,20 @@
         </div>
     </div>
 
-    <div id="setup-screen" class="section-card">
-        <h2>🎮 Tijd voor Slabakken!</h2>
-        <input type="text" id="username" placeholder="Typ je naam..." style="padding:15px; width:80%; border-radius:10px; border:1px solid #ccc; font-size:1.1rem; margin-bottom:15px;">
-        <button class="game-btn" onclick="login(false)">Doe mee</button>
+   <div id="setup-screen" class="section-card">
+    <h2>Doe mee en voer vier woorden in!</h2>
+    <input type="text" id="username" placeholder="Je naam..." style="padding:15px; width:80%; border-radius:10px; border:1px solid #ccc; font-size:1.1rem; margin-bottom:15px;">
+    
+    <div id="word-inputs" style="margin-top: 10px;">
+        <p>Verzin 4 woorden voor het spel:</p>
+        <input type="text" class="user-word" placeholder="Woord 1" style="width:40%; padding:10px; margin:5px;">
+        <input type="text" class="user-word" placeholder="Woord 2" style="width:40%; padding:10px; margin:5px;">
+        <input type="text" class="user-word" placeholder="Woord 3" style="width:40%; padding:10px; margin:5px;">
+        <input type="text" class="user-word" placeholder="Woord 4" style="width:40%; padding:10px; margin:5px;">
     </div>
+    
+    <button class="game-btn" onclick="login(false)" style="margin-top:20px;">Insturen & Start</button>
+</div>
 
     <div id="game-screen" class="section-card hidden">
         <div id="timer" style="font-size: 4rem; text-align:center; color:var(--danger); font-weight:900;">30</div>
@@ -185,23 +194,45 @@
             d.style.display = 'block'; 
         };
 
-        window.login = (asAdmin) => {
-            if(asAdmin) {
-                if(document.getElementById('admin-pass').value === 'bie123') {
-                    isAdmin = true;
-                    document.getElementById('admin-login-box').classList.add('hidden');
-                    document.getElementById('game-screen').classList.remove('hidden');
-                    document.getElementById('admin-controls').classList.remove('hidden');
-                } else { alert("Fout wachtwoord"); }
-            } else {
-                myName = document.getElementById('username').value.trim();
-                if(myName) { 
-                    set(ref(db, 'players/' + myName), { name: myName }); 
-                    document.getElementById('setup-screen').classList.add('hidden'); 
-                    document.getElementById('game-screen').classList.remove('hidden'); 
-                }
-            }
-        };
+        window.login = async (asAdmin) => {
+    if(asAdmin) {
+        if(document.getElementById('admin-pass').value === 'bie123') {
+            isAdmin = true;
+            document.getElementById('admin-login-box').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('hidden');
+            document.getElementById('admin-controls').classList.remove('hidden');
+        } else { alert("Fout wachtwoord"); }
+    } else {
+        myName = document.getElementById('username').value.trim();
+        const wordElements = document.querySelectorAll('.user-word');
+        let myWords = [];
+        wordElements.forEach(el => {
+            if(el.value.trim() !== "") myWords.push(el.value.trim());
+        });
+
+        if(myName && myWords.length === 4) { 
+            // 1. Voeg speler toe
+            set(ref(db, 'players/' + myName), { name: myName }); 
+            
+            // 2. Haal huidige woordenlijst op en voeg de nieuwe toe
+            const snapshot = await get(ref(db, 'game/words'));
+            let currentWords = snapshot.exists() ? snapshot.val() : [];
+            
+            // Voeg elk woord toe als een object {word: "...", owner: "..."}
+            myWords.forEach(w => {
+                currentWords.push({ word: w, owner: myName });
+            });
+
+            // 3. Update de database met de uitgebreide lijst
+            update(ref(db, 'game'), { words: currentWords });
+
+            document.getElementById('setup-screen').classList.add('hidden'); 
+            document.getElementById('game-screen').classList.remove('hidden'); 
+        } else {
+            alert("Vul je naam en alle 4 de woorden in!");
+        }
+    }
+};
 
         // --- SLABAKKEN ---
         onValue(ref(db, 'game'), (snap) => {
