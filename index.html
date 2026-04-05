@@ -292,7 +292,36 @@
             }
             update(ref(db), up);
         };
+// Klok starten
+window.startClock = () => {
+    update(ref(db, 'game'), { clockRunning: true });
+};
 
+// Klok pauzeren/stoppen
+window.stopClock = () => {
+    update(ref(db, 'game'), { clockRunning: false });
+};
+
+// Het hele spel resetten naar de beginstand
+window.resetGame = () => {
+    if(confirm("Weet je zeker dat je het spel wilt resetten? Alle scores en woorden worden gewist.")) {
+        set(ref(db, 'game'), {
+            activeTeam: 'A',
+            clockRunning: false,
+            pIdxA: 0,
+            pIdxB: 0,
+            scoreA: 0,
+            scoreB: 0,
+            timer: 30,
+            wIdx: 0,
+            words: [] // Dit wist de verzamelde woordenlijst
+        });
+        // Ook de spelerslijst wissen? Optioneel:
+        remove(ref(db, 'players'));
+        alert("Spel is gereset!");
+        location.reload(); // Ververst de pagina voor de admin
+    }
+};
         setInterval(() => { 
             if(isAdmin) { 
                 get(ref(db, 'game')).then(s => { 
