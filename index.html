@@ -12,7 +12,6 @@
         .section-card { background: white; border-radius: 20px; padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); max-width: 850px; margin: 20px auto; border-top: 8px solid var(--water); position: relative; }
         h1, h2, h3 { text-align: center; color: var(--deep); }
 
-        /* De Beheerlink Fix */
         .admin-link { position: absolute; top: 15px; right: 20px; font-size: 1.2rem; cursor: pointer; z-index: 100; background: #eee; border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; }
 
         .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; border-radius: 15px; overflow: hidden; background: #000; margin: 20px 0; border: 2px solid #eee; }
@@ -31,6 +30,7 @@
         .question-title { color: var(--teamA); font-weight: 900; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; display: block; }
 
         .game-btn { background: var(--deep); color: white; border: none; padding: 15px 25px; border-radius: 50px; font-weight: bold; cursor: pointer; width: 100%; margin: 10px 0; display: block; font-size: 1rem; }
+        .game-btn:disabled { background: #ccc; cursor: not-allowed; }
         .hidden { display: none !important; }
         .admin-panel { background: #f1f2f6; border: 2px solid var(--water); padding: 15px; border-radius: 15px; margin-top: 20px; }
         .lyrics-scroll-box { height: 350px; overflow-y: scroll; background: #2d3436; color: #ecf0f1; padding: 30px; border-radius: 15px; text-align: center; font-size: 1.4rem; line-height: 1.8; border: 4px solid var(--water); }
@@ -86,20 +86,19 @@
         </div>
     </div>
 
-   <div id="setup-screen" class="section-card">
-    <h2>Doe mee en voer vier woorden in!</h2>
-    <input type="text" id="username" placeholder="Je naam..." style="padding:15px; width:80%; border-radius:10px; border:1px solid #ccc; font-size:1.1rem; margin-bottom:15px;">
-    
-    <div id="word-inputs" style="margin-top: 10px;">
-        <p>Verzin 4 woorden voor het spel:</p>
-        <input type="text" class="user-word" placeholder="Woord 1" style="width:40%; padding:10px; margin:5px;">
-        <input type="text" class="user-word" placeholder="Woord 2" style="width:40%; padding:10px; margin:5px;">
-        <input type="text" class="user-word" placeholder="Woord 3" style="width:40%; padding:10px; margin:5px;">
-        <input type="text" class="user-word" placeholder="Woord 4" style="width:40%; padding:10px; margin:5px;">
+    <div id="setup-screen" class="section-card">
+        <h2>Doe mee en voer vier woorden in!</h2>
+        <input type="text" id="username" placeholder="Je naam..." style="padding:15px; width:80%; border-radius:10px; border:1px solid #ccc; font-size:1.1rem; margin-bottom:15px;">
+        
+        <div id="word-inputs" style="margin-top: 10px;">
+            <p>Verzin 4 woorden voor het spel:</p>
+            <input type="text" class="user-word" placeholder="Woord 1" style="width:40%; padding:10px; margin:5px;">
+            <input type="text" class="user-word" placeholder="Woord 2" style="width:40%; padding:10px; margin:5px;">
+            <input type="text" class="user-word" placeholder="Woord 3" style="width:40%; padding:10px; margin:5px;">
+            <input type="text" class="user-word" placeholder="Woord 4" style="width:40%; padding:10px; margin:5px;">
+        </div>
+        <button class="game-btn" onclick="login(false)" style="margin-top:20px;">Insturen & Start</button>
     </div>
-    
-    <button class="game-btn" onclick="login(false)" style="margin-top:20px;">Insturen & Start</button>
-</div>
 
     <div id="game-screen" class="section-card hidden">
         <div id="timer" style="font-size: 4rem; text-align:center; color:var(--danger); font-weight:900;">30</div>
@@ -109,23 +108,22 @@
             </div>
             <div id="spectator-view" style="text-align:center;"><h3 id="active-player-name" style="color:var(--water); font-size:2.5rem;">?</h3></div>
         </div>
-       <div id="admin-controls" class="hidden admin-panel">
-    <div onclick="toggleBeamerMode()" id="beamerStatus" style="background:#ffeaa7; padding:10px; cursor:pointer; text-align:center; border-radius:10px; font-weight:bold; margin-bottom:10px;">🛡️ BEAMER MODUS: UIT</div>
-    
-    <div id="admin-word-display" style="text-align:center; padding:15px; background:white; border-radius:10px; border:2px solid #ddd; margin-bottom:10px; font-size:1.2rem;"></div>
-    
-    <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-        <button class="game-btn" style="background:#00b894; flex: 1;" onclick="startClock()" id="startBtn">START ▶️</button>
-        <button class="game-btn" style="background:var(--danger); flex: 1;" onclick="stopClock()" id="stopBtn">STOP ⏸️</button>
-    </div>
 
-    <button class="game-btn" style="background:var(--dirty);" onclick="resetGame()">RESET SPEL 🔄</button>
+        <div id="admin-controls" class="hidden admin-panel">
+            <div onclick="toggleBeamerMode()" id="beamerStatus" style="background:#ffeaa7; padding:10px; cursor:pointer; text-align:center; border-radius:10px; font-weight:bold; margin-bottom:10px;">🛡️ BEAMER MODUS: UIT</div>
+            <div id="admin-word-display" style="text-align:center; padding:15px; background:white; border-radius:10px; border:2px solid #ddd; margin-bottom:10px; font-size:1.2rem;"></div>
+            
+            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                <button class="game-btn" style="background:#00b894; flex: 1;" onclick="startClock()" id="startBtn">START ▶️</button>
+                <button class="game-btn" style="background:var(--danger); flex: 1;" onclick="stopClock()" id="stopBtn">STOP ⏸️</button>
+            </div>
+            <button class="game-btn" style="background:var(--dirty);" onclick="resetGame()">RESET SPEL 🔄</button>
 
-    <div id="judge-controls" class="hidden" style="margin-top:10px;">
-        <button class="game-btn" style="background:var(--water)" onclick="judge(true)">GOED ✅ (Volgend woord)</button>
-        <button class="game-btn" style="background:var(--danger)" onclick="judge(false)">FOUT ❌ (Beurt voorbij)</button>
-    </div>
-</div>
+            <div id="judge-controls" class="hidden" style="margin-top:10px;">
+                <button class="game-btn" style="background:var(--water)" onclick="judge(true)">GOED ✅ (Volgend woord)</button>
+                <button class="game-btn" style="background:var(--danger)" onclick="judge(false)">FOUT ❌ (Beurt voorbij)</button>
+            </div>
+        </div>
     </div>
 
     <div class="section-card">
@@ -155,13 +153,13 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, set, onValue, update, push, get, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, set, onValue, update, get, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        // --- SLIDERS ---
+        // Sliders Logica
         const questions = [
-            { title: "De Dorst-check", text: "Waar heb jij de afgelopen periode 'gedronken' (social media, werk, Netflix) en voelde je je daarna voller of juist leger?" },
-            { title: "Actief Vragen", text: "Heb jij wel eens gevraagd of de Heilige Geest jou wil vullen? Durf je nu hardop of in stilte te zeggen: \"Heilige Geest, ik heb dorst, vul mij nu opnieuw\"?" },
-            { title: "Stromend Water", text: "Jezus belooft dat er stromen van levend water uit je binnenste zullen vloeien. Voor wie in jouw omgeving zou jij een 'verfrissing' zijn deze week?" }
+            { title: "De Dorst-check", text: "Waar heb jij de afgelopen periode 'gedronken' en voelde je je daarna voller of juist leger?" },
+            { title: "Actief Vragen", text: "Durf je nu te zeggen: \"Heilige Geest, ik heb dorst, vul mij nu opnieuw\"?" },
+            { title: "Stromend Water", text: "Voor wie in jouw omgeving zou jij een 'verfrissing' zijn deze week?" }
         ];
         let currentQ = -1;
         window.nextQuestion = () => {
@@ -171,7 +169,7 @@
         };
 
         const reflections = [
-            { title: "Persoonlijk", text: "Herken jij dat: Op je rug liggen en niet meer overeind komen? Welke situatie was dat?" },
+            { title: "Persoonlijk", text: "Herken jij dat: Op je rug liggen en niet meer overeind komen?" },
             { title: "Omzien naar elkaar", text: "Heb jij iemand die op z'n rug lag geholpen?" }
         ];
         let currentR = -1;
@@ -181,82 +179,57 @@
             document.getElementById('r-text').innerText = reflections[currentR].text;
         };
 
-        // Init sliders
-        nextQuestion();
-        nextReflection();
+        nextQuestion(); nextReflection();
 
-        // --- ADMIN & LOGICA ---
         const firebaseConfig = { apiKey: "AIzaSyCSoSYmzdcse87_E-p6K-DMn_NbQWFnPNU", authDomain: "huddlebijdebie26jan.firebaseapp.com", databaseURL: "https://huddlebijdebie26jan-default-rtdb.europe-west1.firebasedatabase.app", projectId: "huddlebijdebie26jan" };
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
         let myName = "", isAdmin = false;
 
-        window.toggleAdminLogin = () => {
-            const box = document.getElementById('admin-login-box');
-            box.classList.toggle('hidden');
-        };
-
-        window.setSource = (t) => { 
-            const d = document.getElementById('display-source'); 
-            d.innerText = t; 
-            d.style.display = 'block'; 
-        };
+        window.toggleAdminLogin = () => document.getElementById('admin-login-box').classList.toggle('hidden');
+        window.setSource = (t) => { const d = document.getElementById('display-source'); d.innerText = t; d.style.display = 'block'; };
 
         window.login = async (asAdmin) => {
-    if(asAdmin) {
-        if(document.getElementById('admin-pass').value === 'bie123') {
-            isAdmin = true;
-            document.getElementById('admin-login-box').classList.add('hidden');
-            document.getElementById('game-screen').classList.remove('hidden');
-            document.getElementById('admin-controls').classList.remove('hidden');
-        } else { alert("Fout wachtwoord"); }
-    } else {
-        myName = document.getElementById('username').value.trim();
-        const wordElements = document.querySelectorAll('.user-word');
-        let myWords = [];
-        wordElements.forEach(el => {
-            if(el.value.trim() !== "") myWords.push(el.value.trim());
-        });
+            if(asAdmin) {
+                if(document.getElementById('admin-pass').value === 'bie123') {
+                    isAdmin = true;
+                    document.getElementById('admin-login-box').classList.add('hidden');
+                    document.getElementById('game-screen').classList.remove('hidden');
+                } else { alert("Fout wachtwoord"); }
+            } else {
+                myName = document.getElementById('username').value.trim();
+                const wordElements = document.querySelectorAll('.user-word');
+                let myWords = [];
+                wordElements.forEach(el => { if(el.value.trim() !== "") myWords.push(el.value.trim()); });
+                if(myName && myWords.length === 4) { 
+                    set(ref(db, 'players/' + myName), { name: myName }); 
+                    const snapshot = await get(ref(db, 'game/words'));
+                    let currentWords = snapshot.exists() ? snapshot.val() : [];
+                    myWords.forEach(w => currentWords.push({ word: w, owner: myName }));
+                    update(ref(db, 'game'), { words: currentWords });
+                    document.getElementById('setup-screen').classList.add('hidden'); 
+                    document.getElementById('game-screen').classList.remove('hidden'); 
+                } else { alert("Vul naam en 4 woorden in!"); }
+            }
+        };
 
-        if(myName && myWords.length === 4) { 
-            // 1. Voeg speler toe
-            set(ref(db, 'players/' + myName), { name: myName }); 
-            
-            // 2. Haal huidige woordenlijst op en voeg de nieuwe toe
-            const snapshot = await get(ref(db, 'game/words'));
-            let currentWords = snapshot.exists() ? snapshot.val() : [];
-            
-            // Voeg elk woord toe als een object {word: "...", owner: "..."}
-            myWords.forEach(w => {
-                currentWords.push({ word: w, owner: myName });
-            });
-
-            // 3. Update de database met de uitgebreide lijst
-            update(ref(db, 'game'), { words: currentWords });
-
-            document.getElementById('setup-screen').classList.add('hidden'); 
-            document.getElementById('game-screen').classList.remove('hidden'); 
-        } else {
-            alert("Vul je naam en alle 4 de woorden in!");
-        }
-    }
-};
-
-        // --- SLABAKKEN ---
+        // Real-time Game Update
         onValue(ref(db, 'game'), (snap) => {
             const d = snap.val(); if(!d) return;
             document.getElementById('timer').innerText = d.timer;
-            const actP = d.activeTeam === 'A' ? d.teamA[d.pIdxA] : d.teamB[d.pIdxB];
-            const currentWord = d.words[d.wIdx]?.word || "...";
+            const actP = d.activeTeam === 'A' ? (d.teamA ? d.teamA[d.pIdxA] : "?") : (d.teamB ? d.teamB[d.pIdxB] : "?");
+            const currentWord = (d.words && d.words[d.wIdx]) ? d.words[d.wIdx].word : "...";
             document.getElementById('active-player-name').innerText = actP;
             
             if(isAdmin) {
+                document.getElementById('admin-controls').classList.remove('hidden');
+                document.getElementById('judge-controls').classList.remove('hidden');
                 document.getElementById('admin-word-display').innerHTML = `SPELER: <b>${actP}</b> | WOORD: <b>${currentWord}</b>`;
-                document.getElementById('startBtn').classList.toggle('hidden', d.clockRunning);
-                document.getElementById('judge-controls').classList.toggle('hidden', !d.clockRunning);
+                document.getElementById('startBtn').disabled = d.clockRunning;
+                document.getElementById('stopBtn').disabled = !d.clockRunning;
             }
             
-            if(myName === actP) {
+            if(myName === actP && actP !== "?") {
                 document.getElementById('player-active').classList.remove('hidden');
                 document.getElementById('secret-word').innerText = d.clockRunning ? currentWord : "⏳";
                 document.getElementById('spectator-view').classList.add('hidden');
@@ -266,6 +239,8 @@
             }
         });
 
+        window.startClock = () => update(ref(db, 'game'), { clockRunning: true });
+        window.stopClock = () => update(ref(db, 'game'), { clockRunning: false });
         window.toggleBeamerMode = () => {
             const s = document.getElementById('beamerStatus');
             const isOff = s.innerText.includes("UIT");
@@ -273,7 +248,13 @@
             document.getElementById('admin-word-display').style.filter = isOff ? "blur(10px)" : "none";
         };
 
-        window.toggleClock = () => update(ref(db, 'game'), { clockRunning: true });
+        window.resetGame = () => {
+            if(confirm("Spel resetten?")) {
+                set(ref(db, 'game'), { activeTeam: 'A', clockRunning: false, pIdxA: 0, pIdxB: 0, scoreA: 0, scoreB: 0, timer: 30, wIdx: 0, words: [] });
+                remove(ref(db, 'players'));
+                location.reload();
+            }
+        };
 
         window.judge = async (isCorrect) => {
             const s = await get(ref(db, 'game')); const d = s.val();
@@ -285,51 +266,22 @@
                 confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
             } else {
                 const nT = d.activeTeam === 'A' ? 'B' : 'A';
-                if(d.activeTeam === 'A') up['game/pIdxA'] = (d.pIdxA + 1) % d.teamA.length;
-                else up['game/pIdxB'] = (d.pIdxB + 1) % d.teamB.length;
+                if(d.activeTeam === 'A') up['game/pIdxA'] = (d.pIdxA + 1) % (d.teamA?.length || 1);
+                else up['game/pIdxB'] = (d.pIdxB + 1) % (d.teamB?.length || 1);
                 up['game/activeTeam'] = nT;
                 up['game/wIdx'] = (d.wIdx + 1) % d.words.length;
             }
             update(ref(db), up);
         };
-// Klok starten
-window.startClock = () => {
-    update(ref(db, 'game'), { clockRunning: true });
-};
 
-// Klok pauzeren/stoppen
-window.stopClock = () => {
-    update(ref(db, 'game'), { clockRunning: false });
-};
-
-// Het hele spel resetten naar de beginstand
-window.resetGame = () => {
-    if(confirm("Weet je zeker dat je het spel wilt resetten? Alle scores en woorden worden gewist.")) {
-        set(ref(db, 'game'), {
-            activeTeam: 'A',
-            clockRunning: false,
-            pIdxA: 0,
-            pIdxB: 0,
-            scoreA: 0,
-            scoreB: 0,
-            timer: 30,
-            wIdx: 0,
-            words: [] // Dit wist de verzamelde woordenlijst
-        });
-        // Ook de spelerslijst wissen? Optioneel:
-        remove(ref(db, 'players'));
-        alert("Spel is gereset!");
-        location.reload(); // Ververst de pagina voor de admin
-    }
-};
-        setInterval(() => { 
-            if(isAdmin) { 
-                get(ref(db, 'game')).then(s => { 
-                    const d = s.val(); 
-                    if(d && d.clockRunning && d.timer > 0) update(ref(db, 'game'), { timer: d.timer - 1 }); 
-                    else if(d && d.clockRunning && d.timer === 0) judge(false); 
-                }); 
-            } 
+        setInterval(() => {
+            if(isAdmin) {
+                get(ref(db, 'game')).then(s => {
+                    const d = s.val();
+                    if(d && d.clockRunning && d.timer > 0) update(ref(db, 'game'), { timer: d.timer - 1 });
+                    else if(d && d.clockRunning && d.timer === 0) judge(false);
+                });
+            }
         }, 1000);
     </script>
 </body>
