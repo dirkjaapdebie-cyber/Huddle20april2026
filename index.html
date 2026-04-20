@@ -12,13 +12,16 @@
         .section-card { background: white; border-radius: 20px; padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); max-width: 850px; margin: 20px auto; border-top: 8px solid var(--water); position: relative; }
         h1, h2, h3 { text-align: center; color: var(--deep); }
 
-        /* Stijl voor de openingstekst */
+        .opening-flex { display: flex; gap: 20px; align-items: flex-start; margin-bottom: 20px; flex-wrap: wrap; }
+        .opening-video { flex: 1.2; min-width: 300px; }
+        .opening-lyrics { flex: 0.8; min-width: 300px; background: #2d3436; color: white; padding: 20px; border-radius: 15px; font-size: 0.95rem; line-height: 1.6; height: 315px; overflow-y: auto; border-left: 4px solid var(--water); scroll-behavior: smooth; }
+
         .opening-scripture { background: #f0f9ff; border-left: 5px solid var(--water); padding: 20px; margin: 20px 0; border-radius: 0 15px 15px 0; font-style: italic; line-height: 1.6; color: #2d3436; }
         .scripture-ref { display: block; text-align: right; font-weight: bold; margin-top: 10px; color: var(--deep); font-style: normal; }
 
         .admin-link { position: absolute; top: 15px; right: 20px; font-size: 1.2rem; cursor: pointer; z-index: 100; background: #eee; border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; }
 
-        .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; border-radius: 15px; overflow: hidden; background: #000; margin: 20px 0; border: 2px solid #eee; }
+        .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; border-radius: 15px; overflow: hidden; background: #000; border: 2px solid #eee; }
         .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
         .source-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
@@ -46,6 +49,47 @@
         <div class="admin-link" onclick="toggleAdminLogin()">⚙️</div>
         <h1>🌊 Levend Water</h1>
 
+        <div class="opening-flex">
+            <div class="opening-video">
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/ypWzOKHe9a4" frameborder="0" allowfullscreen></iframe>
+                </div>
+            </div>
+            <div class="opening-lyrics">
+                <div style="white-space: pre-line;">
+                    <b>Bron van levend water</b>
+
+                    Bron van levend water ontspring nu in mij
+                    Zend uw Geest o Heilig God
+                    En maak mij vrij
+                    Van elke situatie die mijn hart bezwaart
+                    'k Geef mijn last aan U
+                    Die heel mijn ziel bewaart
+
+                    Jezus, Jezus, Jezus
+                    Vader, Vader, Vader
+                    Geest van God, Geest van God
+
+                    Heer U bent de Herder die mij geneest
+                    Neem mij in Uw armen
+                    Leid mij door Uw Geest
+                    Neem mijn trots mijn twijfels
+                    En mijn angsten nu
+                    Trek mij met Uw liefde ik verlang naar U
+
+                    Geef jezelf aan Jezus die jou geneest
+                    Laat Hem je omarmen en ontvang zijn Geest
+                    Als je Hem vertrouwt
+                    Word je door Hem bevrijd
+                    Zul je met Hem leven tot in eeuwigheid
+
+                    Jezus, Jezus, Jezus
+                    Vader, Vader, Vader
+                    Geest van God, Geest van God
+                </div>
+            </div>
+        </div>
+
         <div class="opening-scripture">
             "En hij liet mij een zuivere rivier zien van het water des levens, helder als kristal, die uit de troon van God en van het Lam kwam. In het midden van haar straat en aan de ene en de andere zijde van de rivier bevond zich de boom des levens... En de bladeren van de boom zijn tot genezing van de heidenvolken."
             <span class="scripture-ref">Openbaring 22:1-2 (HSV)</span>
@@ -69,7 +113,7 @@
         </div>
         <div id="display-source"></div>
 
-        <div class="video-wrapper">
+        <div class="video-wrapper" style="margin-top:20px;">
             <iframe src="https://www.youtube.com/embed/sFIe0AQWZ9U?start=400&end=600&rel=0" frameborder="0" allowfullscreen></iframe>
         </div>
 
@@ -138,7 +182,7 @@
     <div class="section-card">
         <h2>🙏 Afsluiting & Zingen</h2>
         <div class="video-wrapper">
-            <iframe src="https://www.youtube.com/embed/WAdWM04Jmo4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            <iframe src="https://www.youtube.com/embed/WAdWM04Jmo4" title="YouTube video player" frameborder="0" allowfullscreen></iframe>
         </div>
         <div class="lyrics-scroll-box">
             <h3 style="color:var(--water)">Opwekking 642 – De Rivier</h3>
@@ -164,7 +208,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, set, onValue, update, get, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        // Sliders Logica
         const questions = [
             { title: "De Dorst-check", text: "Waar heb jij de afgelopen periode 'gedronken' en voelde je je daarna voller of juist leger?" },
             { title: "Actief Vragen", text: "Durf je nu te zeggen: \"Heilige Geest, ik heb dorst, vul mij nu opnieuw\"?" },
